@@ -10,17 +10,18 @@ import Combine
 import CombineExt
 import Moya
 
-final class ContentViewModel: Combiner, ObservableObject {
+final class ContentViewModel: ObservableObject, Combiner {
     
     let input: Input
     @Published var output: Output
     
     private let authService = AuthAPIService()
     
-    override init() {
+    var cancellables: Set<AnyCancellable> = .init()
+    
+    init() {
         self.input = Input()
         self.output = Output()
-        super.init()
         
         bind()
     }
@@ -30,7 +31,7 @@ private extension ContentViewModel {
     func bind() {
         let request = input.onAppear
             .first()
-            .filter { UserStorage.shared.string(forKey: .token) == nil }
+            .filter { UserStorage.shared.token == nil }
             .map { [unowned self] in
                 self.authService.postToken().materialize()
             }
@@ -42,7 +43,7 @@ private extension ContentViewModel {
             .values()
             .print()
             .sink {
-                UserStorage.shared.setValue($0.accessToken, forKey: .token)
+                UserStorage.shared.token = $0.accessToken
             }
             .store(in: &self.cancellables)
         

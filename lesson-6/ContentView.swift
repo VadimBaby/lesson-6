@@ -13,11 +13,7 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            Text("set token as nil")
-                .onTapGesture {
-                    UserStorage.shared.setValue(nil, forKey: .token)
-                    print(UserStorage.shared.string(forKey: .token))
-                }
+            Text("✋🏼 🌍")
         }
         .padding()
         .onAppear(perform: viewModel.input.onAppear.send)

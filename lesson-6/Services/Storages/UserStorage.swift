@@ -18,6 +18,17 @@ final class UserStorage  {
     
     private init() {}
     
+    var token: String? {
+        get {
+            self.string(forKey: .token)
+        }
+        set {
+            setValue(newValue, forKey: .token)
+        }
+    }
+}
+
+private extension UserStorage {
     func setValue(_ value: Any?, forKey key: UserStorageKey) {
         userDefaults.setValue(value, forKey: key.rawValue)
     }

@@ -8,9 +8,20 @@
 import Foundation
 import Combine
 
-class Combiner {
-    var cancellables: Set<AnyCancellable> = .init()
+protocol Combiner: AnyObject {
+    associatedtype S
+    associatedtype T
     
+    var input: T { get }
+    var output: S { get set }
+    
+    var cancellables: Set<AnyCancellable> { get set }
+    
+    func printErrors<T: Error>(_ publisher: AnyPublisher<T, Never>)
+    func cancelAllCancellables()
+}
+
+extension Combiner {
     func printErrors<T: Error>(_ publisher: AnyPublisher<T, Never>) {
         publisher
             .sink { print($0) }
